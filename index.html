@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Studio - Suite de modèles</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+        }
+        .header { text-align: center; padding: 40px 20px; color: white; }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p { opacity: 0.8; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .card-icon { font-size: 48px; margin-bottom: 16px; }
+        .card h2 { font-size: 1.5rem; margin-bottom: 8px; color: #333; }
+        .card p { color: #666; font-size: 0.9rem; line-height: 1.5; }
+        .card-badge {
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-top: 16px;
+            color: #666;
+        }
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.8rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎨 AI Studio</h1>
+        <p>Suite de modèles d'intelligence artificielle</p>
+    </div>
+    <div class="container">
+        <div class="grid">
+            <a href="tts/tts_ui.html" class="card">
+                <div class="card-icon">🎙️</div>
+                <h2>Text-to-Speech</h2>
+                <p>Générez de la parole à partir de texte. Plusieurs voix disponibles.</p>
+                <span class="card-badge">🔄 Mise à jour récente</span>
+            </a>
+            <a href="text_to_image/text_to_image_ui.html" class="card">
+                <div class="card-icon">✨</div>
+                <h2>Text-to-Image</h2>
+                <p>Générez des images à partir de descriptions textuelles.</p>
+                <span class="card-badge">⚡ Ultra-rapide</span>
+            </a>
+            <a href="image_to_image/image_ui.html" class="card">
+                <div class="card-icon">🎨</div>
+                <h2>Image-to-Image</h2>
+                <p>Transformez vos images existantes avec FLUX.2-klein.</p>
+                <span class="card-badge">🎨 Style transfert</span>
+            </a>
+            <a href="video_generation/video_ui.html" class="card">
+                <div class="card-icon">🎬</div>
+                <h2>Text-to-Video</h2>
+                <p>Générez des vidéos à partir de texte avec Wan2.2.</p>
+                <span class="card-badge">🎥 720P</span>
+            </a>
+        </div>
+    </div>
+    <div class="footer">
+        <p>⚡ Modèles déployés sur Modal • 💾 Fichiers stockés sur les volumes Modal</p>
+        <p style="margin-top: 8px;">🔧 <a href="https://github.com/zied98/Modal-Models" target="_blank" style="color: #667eea;">GitHub</a></p>
+    </div>
+</body>
+</html>
