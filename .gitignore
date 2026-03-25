@@ -1,0 +1,26 @@
+# Tokens et secrets
+hf_token.txt
+*.token
+.env
+
+# Fichiers générés localement
+generations/
+transformations/
+__pycache__/
+*.pyc
+
+# Fichiers temporaires de test
+*.mp4
+*.wav
+*.png
+temp_*
+test_*
+
+# Fichiers d'environnement
+.venv/
+venv/
+ENV/
+
+# OS
+.DS_Store
+Thumbs.db

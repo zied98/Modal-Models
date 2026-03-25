@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Image-to-Image - FLUX.2-klein</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .info {
+            background: #e3f2fd;
+            color: #0b5e8a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .image-preview {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .preview-box {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .preview-box label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .preview-box input[type="file"] {
+            padding: 10px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .preview-box img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .download-btn {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .download-btn:hover {
+            background: #38a169;
+        }
+        
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #e3f2fd;
+            color: #0b5e8a;
+            border: 1px solid #b8e1fc;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .image-preview {
+                flex-direction: column;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🎨 FLUX.2-klein</h2>
+            <p>Édition d'images par intelligence artificielle</p>
+        </div>
+        
+        <div class="content">
+            <div class="info">
+                🔥 Modèle FLUX.2-klein - Transformez vos images avec des prompts créatifs
+            </div>
+            
+            <div class="image-preview">
+                <div class="preview-box">
+                    <label>📷 Image source</label>
+                    <input type="file" id="imageInput" accept="image/*">
+                    <img id="sourcePreview" style="display:none;">
+                </div>
+                <div class="preview-box">
+                    <label>✨ Image générée</label>
+                    <img id="resultPreview" style="display:none;">
+                </div>
+            </div>
+            
+            <textarea id="prompt" rows="4" placeholder="Décrivez la transformation souhaitée en anglais...&#10;Exemple: A cute dog wizard inspired by Gandalf from Lord of the Rings, featuring detailed fantasy elements in Studio Ghibli style"></textarea>
+            
+            <div class="button-group">
+                <button class="generate-btn" onclick="generate()">🎬 Générer l'image</button>
+                <button class="download-btn" id="downloadBtn" onclick="downloadImage()" style="display:none;">💾 Télécharger</button>
+            </div>
+            
+            <div id="status" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        // L'URL qui a fonctionné avec curl
+        const API_URL = "https://ziedbouzekri06--image-to-image-flux-klein-fluxkleinedito-32a3b9.modal.run";
+        
+        let currentImageBlob = null;
+        
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = document.getElementById('sourcePreview');
+                    img.src = event.target.result;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        async function generate() {
+            const file = document.getElementById('imageInput').files[0];
+            const prompt = document.getElementById('prompt').value;
+            const statusDiv = document.getElementById('status');
+            const resultPreview = document.getElementById('resultPreview');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            if (!prompt) {
+                showStatus('Veuillez entrer un prompt', 'error');
+                return;
+            }
+            
+            showStatus('⏳ Génération en cours... (20-30 secondes)', 'info');
+            resultPreview.style.display = 'none';
+            downloadBtn.style.display = 'none';
+            
+            try {
+                // Utiliser URLSearchParams comme curl -d (format x-www-form-urlencoded)
+                const formData = new URLSearchParams();
+                formData.append('prompt', prompt);
+                
+                if (file) {
+                    const base64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                    formData.append('image_data', base64);
+                }
+                
+                console.log('📤 Envoi de la requête à:', API_URL);
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString()
+                });
+                
+                if (!response.ok) {
+                    let errorMsg = `Erreur HTTP ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        errorMsg = errorData.error || errorMsg;
+                    } catch(e) {
+                        errorMsg = await response.text() || errorMsg;
+                    }
+                    throw new Error(errorMsg);
+                }
+                
+                currentImageBlob = await response.blob();
+                const imageUrl = URL.createObjectURL(currentImageBlob);
+                
+                resultPreview.src = imageUrl;
+                resultPreview.style.display = 'block';
+                downloadBtn.style.display = 'block';
+                
+                const sizeKB = (currentImageBlob.size / 1024).toFixed(1);
+                showStatus(`✅ Image générée avec succès ! (${sizeKB} Ko)`, 'success');
+                
+            } catch (error) {
+                console.error('❌ Erreur détaillée:', error);
+                showStatus(`❌ Erreur: ${error.message}`, 'error');
+            }
+        }
+        
+        function downloadImage() {
+            if (!currentImageBlob) return;
+            
+            const date = new Date();
+            const timestamp = `${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}_${date.getHours().toString().padStart(2,'0')}${date.getMinutes().toString().padStart(2,'0')}`;
+            const filename = `flux_${timestamp}.png`;
+            
+            const url = URL.createObjectURL(currentImageBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+            
+            if (type !== 'info') {
+                setTimeout(() => {
+                    if (statusDiv.className === `status ${type}`) {
+                        statusDiv.style.display = 'none';
+                    }
+                }, 5000);
+            }
+        }
+        
+        document.getElementById('prompt').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                generate();
+            }
+        });
+    </script>
+</body>
+</html>
