@@ -1,11 +1,9 @@
 import modal
 from io import BytesIO
 import base64
-from fastapi import FastAPI, File, Form, HTTPException
 from fastapi.responses import JSONResponse, Response
-from pydantic import BaseModel
-from typing import Optional
 from PIL import Image
+from typing import Optional
 
 app = modal.App("image-to-image-flux-klein")
 
@@ -78,32 +76,14 @@ class FluxKleinEditor:
         result.save(output, format="PNG")
         return output.getvalue()
 
-    @modal.fastapi_endpoint(method="GET")
-    def test(self):
-        return {"status": "ok", "message": "API fonctionne"}
-
-    @modal.fastapi_endpoint(method="OPTIONS")
-    def options_generate(self):
-        return Response(
-            headers={
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Max-Age": "86400"
-            }
-        )
-
+    # UN SEUL ENDPOINT : generate (POST)
     @modal.fastapi_endpoint(method="POST")
     async def generate(
         self,
-        prompt: str = Form(...),
-        image_data: Optional[str] = Form(None)
+        prompt: str,
+        image_data: Optional[str] = None
     ):
-        """Génère une image - accepte les formulaires multipart"""
         try:
-            print(f"📝 Reçu prompt: {prompt[:50]}...")
-            print(f"🖼️ Image data reçue: {'Oui' if image_data else 'Non'}")
-            
             if not prompt:
                 return JSONResponse(
                     {"error": "Prompt requis"},
@@ -113,37 +93,26 @@ class FluxKleinEditor:
             
             # Si pas d'image, créer une image grise par défaut
             if not image_data:
-                print("🎨 Création d'une image grise par défaut")
                 img = Image.new('RGB', (512, 512), color='gray')
                 buffer = BytesIO()
                 img.save(buffer, format="PNG")
                 image_bytes = buffer.getvalue()
             else:
-                # Nettoyer le base64 si nécessaire
                 if image_data.startswith("data:image"):
                     image_bytes = base64.b64decode(image_data.split(",")[1])
                 else:
                     image_bytes = base64.b64decode(image_data)
-                print(f"📦 Image décodée: {len(image_bytes)} bytes")
             
-            print("🎨 Appel du modèle...")
             result_bytes = self.edit.local(image_bytes, prompt)
-            print(f"✅ Image générée: {len(result_bytes)} bytes")
             
-            # Retourner directement l'image
             return Response(
                 content=result_bytes,
                 media_type="image/png",
-                headers={
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "POST, GET, OPTIONS"
-                }
+                headers={"Access-Control-Allow-Origin": "*"}
             )
             
         except Exception as e:
             print(f"❌ Erreur: {str(e)}")
-            import traceback
-            traceback.print_exc()
             return JSONResponse(
                 {"error": str(e)},
                 status_code=500,

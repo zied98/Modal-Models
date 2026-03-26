@@ -121,6 +121,10 @@
             width: auto;
             border-radius: 5px;
             margin-top: 10px;
+            display: inline-block;
+            cursor: pointer;
+            border: none;
+            color: white;
         }
         .copy-btn:hover {
             background: #1976D2;
@@ -140,7 +144,7 @@
         .steps-guide ol {
             margin-left: 20px;
             color: #555;
-            line-height: 1.6;
+            line-height: 1.8;
         }
         .steps-guide code {
             background: #e9ecef;
@@ -168,6 +172,7 @@
             body { padding: 10px; }
             .container { padding: 20px; }
             h1 { font-size: 24px; }
+            .steps-guide ol { margin-left: 16px; }
         }
     </style>
 </head>
@@ -176,7 +181,7 @@
         <h1>🎬 Wan2.2 Video Studio</h1>
         <div class="subtitle">Génération de vidéos par intelligence artificielle</div>
 
-        <div class="info">🎥 Modèle Wan2.2-T2V-A14B - Génère des vidéos 480P/720P jusqu'à 10 secondes</div>
+        <div class="info">🎥 Modèle Wan2.2-T2V-A14B - Génère des vidéos 480P jusqu'à 10 secondes</div>
 
         <div class="form-group">
             <label>📝 Prompt (description en anglais)</label>
@@ -196,6 +201,8 @@
         <div class="steps-guide">
             <h3>📥 Comment récupérer votre vidéo</h3>
             <ol>
+                <li><strong>Lancer le serveur de sauvegarde (si ce n'est pas déjà fait) :</strong><br>
+                <code>cd C:\Users\pc\Desktop\chatterbox_geopolitique\video_generation && python proxy_server.py</code></li>
                 <li>Ouvrez un terminal dans le dossier <code>video_generation/</code></li>
                 <li>Listez les vidéos disponibles : <br><code>python -m modal volume ls wan-outputs</code></li>
                 <li>Identifiez votre vidéo (la plus récente avec la date du jour)</li>
@@ -213,7 +220,7 @@
     </div>
 
     <script>
-        const API_URL = "https://ziedbouzekri06--video-generation-wan-wanvideogenerator-g-0a47a6.modal.run";
+        const API_URL = "https://ziedbouzekri06--video-generation-wan-wanvideogenerator-generate.modal.run";
         let currentGenerationInProgress = false;
 
         async function generateVideo() {

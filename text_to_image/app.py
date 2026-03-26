@@ -6,7 +6,7 @@ from PIL import Image
 
 app = modal.App("text-to-image-zimage")
 
-# === IMAGE DOCKER AVEC LA DERNIÈRE VERSION DE DIFFUSERS ===
+# === IMAGE DOCKER ===
 image = (
     modal.Image.debian_slim(python_version="3.11")
     .apt_install("git")
@@ -18,7 +18,6 @@ image = (
         "fastapi[standard]",
         "huggingface_hub",
     )
-    # Installation de la dernière version de diffusers depuis le main
     .run_commands(
         "pip install git+https://github.com/huggingface/diffusers.git"
     )
@@ -37,7 +36,6 @@ image = image.env({
 
 with image.imports():
     import torch
-    # Le nom correct est probablement ZImagePipeline
     from diffusers import ZImagePipeline
 
 @app.cls(
@@ -52,9 +50,6 @@ class ZImageTextToImage:
     def load(self):
         print("🔄 Chargement de Z-Image-Turbo...", flush=True)
         start = time.time()
-        
-        # Vérifions ce qui est disponible
-        print("🔍 Vérification des pipelines disponibles...", flush=True)
         
         self.pipe = ZImagePipeline.from_pretrained(
             "Tongyi-MAI/Z-Image-Turbo",
@@ -84,8 +79,9 @@ class ZImageTextToImage:
         result.save(output, format="PNG")
         return output.getvalue()
 
+    # UN SEUL ENDPOINT : generate (POST)
     @modal.fastapi_endpoint(method="POST")
-    def generate_image(self, prompt: str, height: int = 512, width: int = 512):
+    def generate(self, prompt: str, height: int = 512, width: int = 512):
         try:
             if not prompt:
                 return JSONResponse(
@@ -110,17 +106,11 @@ class ZImageTextToImage:
             
         except Exception as e:
             print(f"❌ Erreur: {e}", flush=True)
-            import traceback
-            traceback.print_exc()
             return JSONResponse(
                 {"error": str(e)},
                 status_code=500,
                 headers={"Access-Control-Allow-Origin": "*"}
             )
-
-    @modal.fastapi_endpoint(method="GET")
-    def health(self):
-        return {"status": "ok", "model": "Z-Image-Turbo"}
 
 @app.local_entrypoint()
 def test():

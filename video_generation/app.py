@@ -86,8 +86,8 @@ class WanVideoGenerator:
         print(f"✅ Chargé en {time.time()-start:.1f}s")
 
     @modal.method()
-    def generate(self, prompt: str, height: int = 480, width: int = 720, 
-                 num_frames: int = 81, seed: int = None) -> str:
+    def _generate(self, prompt: str, height: int = 480, width: int = 720, 
+                  num_frames: int = 81, seed: int = None) -> str:
         if seed is None:
             seed = random.randint(0, 2**32 - 1)
         
@@ -111,16 +111,13 @@ class WanVideoGenerator:
         torch.cuda.empty_cache()
         return mp4_name
 
+    # UN SEUL ENDPOINT : generate (POST)
     @modal.fastapi_endpoint(method="POST")
-    async def generate_video(self, request: Request):
+    async def generate(self, request: Request):
         try:
-            # Récupérer le prompt depuis l'URL ou le body
+            # Récupérer le prompt depuis l'URL
             params = request.query_params
             prompt = params.get("prompt")
-            
-            if not prompt:
-                form = await request.form()
-                prompt = form.get("prompt")
             
             if not prompt:
                 return JSONResponse({"error": "Prompt requis"}, status_code=400)
@@ -132,7 +129,7 @@ class WanVideoGenerator:
             print(f"📝 Génération: {prompt[:50]}...")
             start = time.time()
             
-            mp4_name = self.generate.local(prompt, height, width, num_frames)
+            mp4_name = self._generate.local(prompt, height, width, num_frames)
             
             # Lire le fichier depuis le volume
             video_bytes = b"".join(output_volume.read_file(mp4_name))
@@ -144,8 +141,7 @@ class WanVideoGenerator:
                 media_type="video/mp4",
                 headers={
                     "Access-Control-Allow-Origin": "*",
-                    "Content-Disposition": f"attachment; filename={mp4_name}",
-                    "Content-Length": str(len(video_bytes))
+                    "Content-Disposition": f"attachment; filename={mp4_name}"
                 }
             )
             
