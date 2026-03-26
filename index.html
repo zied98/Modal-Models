@@ -5,102 +5,166 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Studio - Suite de modèles</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            min-height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f5f5;
         }
-        .header { text-align: center; padding: 40px 20px; color: white; }
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        .header p { opacity: 0.8; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 {
+            color: #333;
+            margin-top: 0;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
-            margin-top: 40px;
+            margin-top: 20px;
         }
         .card {
             background: white;
-            border-radius: 24px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
             padding: 24px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
             text-decoration: none;
             color: inherit;
             display: block;
         }
         .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: #4CAF50;
         }
-        .card-icon { font-size: 48px; margin-bottom: 16px; }
-        .card h2 { font-size: 1.5rem; margin-bottom: 8px; color: #333; }
-        .card p { color: #666; font-size: 0.9rem; line-height: 1.5; }
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        .card p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
         .card-badge {
             display: inline-block;
-            background: #e0e0e0;
+            background: #f0f0f0;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
-            margin-top: 16px;
             color: #666;
         }
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .dot-green { background: #4CAF50; box-shadow: 0 0 5px #4CAF50; }
+        .dot-blue { background: #2196F3; box-shadow: 0 0 5px #2196F3; }
+        .dot-purple { background: #9c27b0; box-shadow: 0 0 5px #9c27b0; }
+        .dot-orange { background: #ff9800; box-shadow: 0 0 5px #ff9800; }
         .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
             text-align: center;
-            padding: 40px 20px;
-            color: rgba(255,255,255,0.6);
+            color: #999;
             font-size: 0.85rem;
         }
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
         @media (max-width: 600px) {
-            .header h1 { font-size: 1.8rem; }
+            body { padding: 10px; }
+            .container { padding: 20px; }
+            h1 { font-size: 24px; }
             .grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🎨 AI Studio</h1>
-        <p>Suite de modèles d'intelligence artificielle</p>
-    </div>
     <div class="container">
+        <h1>🎙️ AI Studio</h1>
+        <div class="subtitle">
+            Suite de modèles d'intelligence artificielle pour la génération vocale, d'images et de vidéos
+        </div>
+
         <div class="grid">
+            <!-- Carte TTS -->
             <a href="tts/tts_ui.html" class="card">
                 <div class="card-icon">🎙️</div>
                 <h2>Text-to-Speech</h2>
-                <p>Générez de la parole à partir de texte. Plusieurs voix disponibles.</p>
-                <span class="card-badge">🔄 Mise à jour récente</span>
+                <p>Générez de la parole à partir de texte. Plusieurs voix disponibles en anglais.</p>
+                <div>
+                    <span class="status-dot dot-green"></span>
+                    <span class="card-badge">20+ voix</span>
+                </div>
             </a>
+
+            <!-- Carte Text-to-Image -->
             <a href="text_to_image/text_to_image_ui.html" class="card">
                 <div class="card-icon">✨</div>
                 <h2>Text-to-Image</h2>
-                <p>Générez des images à partir de descriptions textuelles.</p>
-                <span class="card-badge">⚡ Ultra-rapide</span>
+                <p>Générez des images à partir de descriptions textuelles avec Z-Image-Turbo.</p>
+                <div>
+                    <span class="status-dot dot-blue"></span>
+                    <span class="card-badge">Ultra-rapide</span>
+                </div>
             </a>
+
+            <!-- Carte Image-to-Image -->
             <a href="image_to_image/image_ui.html" class="card">
                 <div class="card-icon">🎨</div>
                 <h2>Image-to-Image</h2>
-                <p>Transformez vos images existantes avec FLUX.2-klein.</p>
-                <span class="card-badge">🎨 Style transfert</span>
+                <p>Transformez vos images existantes avec FLUX.2-klein. Édition créative.</p>
+                <div>
+                    <span class="status-dot dot-purple"></span>
+                    <span class="card-badge">Style transfert</span>
+                </div>
             </a>
+
+            <!-- Carte Video Generation -->
             <a href="video_generation/video_ui.html" class="card">
                 <div class="card-icon">🎬</div>
                 <h2>Text-to-Video</h2>
-                <p>Générez des vidéos à partir de texte avec Wan2.2.</p>
-                <span class="card-badge">🎥 720P</span>
+                <p>Générez des vidéos à partir de texte avec Wan2.2. Qualité cinématographique.</p>
+                <div>
+                    <span class="status-dot dot-orange"></span>
+                    <span class="card-badge">720P</span>
+                </div>
             </a>
         </div>
-    </div>
-    <div class="footer">
-        <p>⚡ Modèles déployés sur Modal • 💾 Fichiers stockés sur les volumes Modal</p>
-        <p style="margin-top: 8px;">🔧 <a href="https://github.com/zied98/Modal-Models" target="_blank" style="color: #667eea;">GitHub</a></p>
+
+        <div class="footer">
+            <p>⚡ Modèles déployés sur Modal • 💾 Fichiers stockés sur les volumes Modal</p>
+            <p>🔧 <a href="https://github.com/zied98/Modal-Models" target="_blank">GitHub</a> • 📖 <a href="README.md">Documentation</a></p>
+        </div>
     </div>
 </body>
 </html>

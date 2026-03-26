@@ -5,129 +5,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wan2.2 - Génération vidéo</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            min-height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 800px;
+            margin: 30px auto;
             padding: 20px;
+            background: #f5f5f5;
         }
-        .container { max-width: 700px; margin: 0 auto; }
-        .card {
+        .container {
             background: white;
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        .header { text-align: center; margin-bottom: 32px; }
-        .header h1 {
-            font-size: 2rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h1 {
+            color: #333;
+            margin-top: 0;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .info {
+            background: #e3f2fd;
+            color: #0b5e8a;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
             margin-bottom: 8px;
+            color: #333;
         }
-        .form-group { margin-bottom: 24px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; }
         textarea {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             font-size: 14px;
             font-family: inherit;
             resize: vertical;
+            box-sizing: border-box;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
         }
         button {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #4CAF50;
             color: white;
-            padding: 14px 28px;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
             border: none;
-            border-radius: 12px;
+            border-radius: 5px;
             cursor: pointer;
             width: 100%;
-            transition: all 0.3s;
+            transition: background 0.2s;
         }
-        button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.4); }
-        button:disabled { opacity: 0.6; transform: none; cursor: not-allowed; }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
         .status {
-            padding: 12px;
-            border-radius: 12px;
-            margin-top: 20px;
-            font-size: 14px;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
             display: none;
         }
-        .status.success { background: #d4edda; color: #155724; }
-        .status.error { background: #f8d7da; color: #721c24; }
-        .status.info { background: #e3f2fd; color: #0b5e8a; }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status.info {
+            background: #e3f2fd;
+            color: #0b5e8a;
+        }
         .command-box {
             background: #1e1e1e;
             color: #d4d4d4;
             padding: 16px;
-            border-radius: 12px;
-            font-family: monospace;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
             font-size: 13px;
-            margin: 20px 0;
+            margin: 16px 0;
             overflow-x: auto;
         }
+        .command-box code {
+            display: block;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
         .copy-btn {
-            background: #48bb78;
-            padding: 8px 16px;
-            font-size: 13px;
+            background: #2196F3;
+            padding: 6px 12px;
+            font-size: 12px;
             width: auto;
-            border-radius: 8px;
-            margin-top: 12px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background: #1976D2;
+        }
+        .steps-guide {
+            background: #f8f9fa;
+            border-left: 4px solid #4CAF50;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .steps-guide h3 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        .steps-guide ol {
+            margin-left: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .steps-guide code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #d63384;
         }
         .note {
             background: #f0f0f0;
             padding: 12px;
-            border-radius: 12px;
+            border-radius: 5px;
             margin-top: 20px;
             font-size: 12px;
             color: #666;
             text-align: center;
         }
-        @media (max-width: 600px) { .card { padding: 20px; } }
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #eee;
+        }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 20px; }
+            h1 { font-size: 24px; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="card">
-            <div class="header">
-                <h1>🎬 Wan2.2 Video Studio</h1>
-                <p>Génération de vidéos par IA</p>
-            </div>
+        <h1>🎬 Wan2.2 Video Studio</h1>
+        <div class="subtitle">Génération de vidéos par intelligence artificielle</div>
 
-            <div class="form-group">
-                <label>📝 Prompt (en anglais)</label>
-                <textarea id="prompt" rows="3" placeholder="Exemple: a cute dog playing with a ball, cinematic lighting"></textarea>
-            </div>
+        <div class="info">🎥 Modèle Wan2.2-T2V-A14B - Génère des vidéos 480P/720P jusqu'à 10 secondes</div>
 
-            <button id="generateBtn" onclick="generateVideo()">🎬 Lancer la génération</button>
-            <div id="status" class="status"></div>
+        <div class="form-group">
+            <label>📝 Prompt (description en anglais)</label>
+            <textarea id="prompt" rows="3" placeholder="Exemple: a cute dog playing with a ball, cinematic lighting, 4k quality"></textarea>
+        </div>
 
-            <div id="downloadSection" style="display:none;">
-                <div class="command-box">
-                    <div>📥 <strong>Pour récupérer la vidéo :</strong></div>
-                    <code id="commandText" style="display:block; margin: 12px 0; word-break: break-all;"></code>
-                    <button class="copy-btn" onclick="copyCommand()">📋 Copier la commande</button>
-                </div>
-                <p style="font-size: 12px; color: #666;">Collez la commande dans votre terminal (dossier video_generation/). La vidéo sera sauvegardée dans le dossier "generations/".</p>
-            </div>
+        <button id="generateBtn" onclick="generateVideo()">🎬 Lancer la génération</button>
+        <div id="status" class="status"></div>
 
-            <div class="note">
-                ⚡ Première génération : 2-3 min (chargement du modèle)<br>
-                🚀 Générations suivantes : 5-10 min<br>
-                💾 Après la génération, utilisez la commande ci-dessus pour télécharger la vidéo
+        <div id="downloadSection" style="display:none;">
+            <div class="command-box">
+                <code id="commandText"></code>
+                <button class="copy-btn" onclick="copyCommand()">📋 Copier la commande</button>
             </div>
+        </div>
+
+        <div class="steps-guide">
+            <h3>📥 Comment récupérer votre vidéo</h3>
+            <ol>
+                <li>Ouvrez un terminal dans le dossier <code>video_generation/</code></li>
+                <li>Listez les vidéos disponibles : <br><code>python -m modal volume ls wan-outputs</code></li>
+                <li>Identifiez votre vidéo (la plus récente avec la date du jour)</li>
+                <li>Téléchargez-la : <br><code>python -m modal volume get wan-outputs [NOM_FICHIER] generations/ma_video.mp4</code></li>
+                <li>Ouvrez la vidéo dans <code>generations/</code> avec votre lecteur</li>
+            </ol>
+            <p style="margin-top: 12px; font-size: 12px; color: #666;">💡 <strong>Astuce :</strong> Créez d'abord le dossier <code>generations</code> avec <code>mkdir generations</code></p>
+        </div>
+
+        <div class="note">
+            ⚡ Premier appel : 2-3 min (chargement du modèle)<br>
+            🚀 Générations suivantes : 5-10 min<br>
+            💾 Les vidéos sont stockées sur le volume Modal <code>wan-outputs</code>
         </div>
     </div>
 
     <script>
         const API_URL = "https://ziedbouzekri06--video-generation-wan-wanvideogenerator-g-0a47a6.modal.run";
-        let generationStarted = false;
+        let currentGenerationInProgress = false;
 
         async function generateVideo() {
             const prompt = document.getElementById('prompt').value;
@@ -143,6 +230,7 @@
             showStatus('⏳ Génération lancée ! (5-10 minutes, patientez)', 'info');
             generateBtn.disabled = true;
             downloadSection.style.display = 'none';
+            currentGenerationInProgress = true;
 
             try {
                 const url = `${API_URL}?prompt=${encodeURIComponent(prompt)}&height=480&width=720&num_frames=81`;
@@ -157,27 +245,31 @@
                 if (blob.size > 0) {
                     showStatus(`✅ Génération terminée ! (${(blob.size/1024).toFixed(1)} Ko)`, 'success');
                     
-                    // Afficher la commande pour télécharger depuis le volume
-                    const command = `python -m modal volume ls wan-outputs\n# Puis téléchargez la dernière vidéo avec:\npython -m modal volume get wan-outputs [NOM_DU_FICHIER] generations/ma_video.mp4\n\n# Pour créer le dossier generations:\nmkdir generations`;
+                    const command = `# 1. Créer le dossier generations\nmkdir generations\n\n# 2. Lister les vidéos disponibles\npython -m modal volume ls wan-outputs\n\n# 3. Télécharger la dernière vidéo (remplacer [NOM_FICHIER])\npython -m modal volume get wan-outputs [NOM_FICHIER] generations/ma_video.mp4\n\n# 4. Ouvrir la vidéo\nstart generations\\ma_video.mp4`;
                     
                     document.getElementById('commandText').innerHTML = command;
                     downloadSection.style.display = 'block';
                 } else {
-                    showStatus('⚠️ Génération terminée mais fichier vide. Vérifiez les logs.', 'error');
+                    showStatus('⚠️ Génération terminée mais fichier vide. Vérifiez les logs Modal.', 'error');
                 }
                 
             } catch (error) {
                 showStatus(`❌ Erreur: ${error.message}`, 'error');
             } finally {
                 generateBtn.disabled = false;
+                currentGenerationInProgress = false;
             }
         }
 
         function copyCommand() {
             const text = document.getElementById('commandText').innerText;
             navigator.clipboard.writeText(text);
-            showStatus('✅ Commande copiée ! Collez-la dans votre terminal.', 'success');
-            setTimeout(() => document.getElementById('status').style.display = 'none', 3000);
+            showStatus('✅ Commandes copiées ! Collez-les dans votre terminal.', 'success');
+            setTimeout(() => {
+                if (document.getElementById('status').className === 'status success') {
+                    document.getElementById('status').style.display = 'none';
+                }
+            }, 3000);
         }
 
         function showStatus(message, type) {
@@ -185,6 +277,13 @@
             statusDiv.textContent = message;
             statusDiv.className = `status ${type}`;
             statusDiv.style.display = 'block';
+            if (type !== 'info') {
+                setTimeout(() => {
+                    if (statusDiv.className === `status ${type}`) {
+                        statusDiv.style.display = 'none';
+                    }
+                }, 8000);
+            }
         }
     </script>
 </body>
