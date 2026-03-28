@@ -2,25 +2,51 @@
 hf_token.txt
 *.token
 .env
+.env.local
+.env.*.local
 
 # Fichiers générés localement
 generations/
 transformations/
+conversations/
+workflows/
 __pycache__/
 *.pyc
+*.pyo
 
 # Fichiers temporaires de test
 *.mp4
 *.wav
 *.png
+*.jpg
+*.jpeg
 temp_*
 test_*
+output_*
 
 # Fichiers d'environnement
 .venv/
 venv/
 ENV/
+env/
+.envrc
 
-# OS
+# IDEs et OS
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+modal.log
+
+# Modal (caches locaux)
+.modal/
+.cache/
+
+# Node (si jamais utilisé)
+node_modules/
+package-lock.json
