@@ -85,6 +85,8 @@
         .dot-blue { background: #2196F3; box-shadow: 0 0 5px #2196F3; }
         .dot-purple { background: #9c27b0; box-shadow: 0 0 5px #9c27b0; }
         .dot-orange { background: #ff9800; box-shadow: 0 0 5px #ff9800; }
+        .dot-red { background: #f44336; box-shadow: 0 0 5px #f44336; }
+        .dot-teal { background: #009688; box-shadow: 0 0 5px #009688; }
         .footer {
             margin-top: 40px;
             padding-top: 20px;
@@ -112,7 +114,7 @@
     <div class="container">
         <h1>🎙️ AI Studio</h1>
         <div class="subtitle">
-            Suite de modèles d'intelligence artificielle pour la génération vocale, d'images et de vidéos
+            Suite de modèles d'intelligence artificielle pour la génération vocale, d'images, de vidéos et de texte
         </div>
 
         <div class="grid">
@@ -157,6 +159,28 @@
                 <div>
                     <span class="status-dot dot-orange"></span>
                     <span class="card-badge">720P</span>
+                </div>
+            </a>
+
+            <!-- Carte LLM - Qwen2.5-7B -->
+            <a href="llm/llm_ui.html" class="card">
+                <div class="card-icon">🤖</div>
+                <h2>LLM Assistant</h2>
+                <p>Assistant IA conversationnel avec Qwen2.5-7B. Multilingue, 128K tokens de contexte.</p>
+                <div>
+                    <span class="status-dot dot-red"></span>
+                    <span class="card-badge">7B paramètres</span>
+                </div>
+            </a>
+
+            <!-- Carte ComfyUI -->
+            <a href="https://ziedbouzekri06--comfyui-server-comfyuiserver-ui.modal.run" class="card" target="_blank">
+                <div class="card-icon">🖼️</div>
+                <h2>ComfyUI Studio</h2>
+                <p>Interface graphique par nœuds pour créer des workflows IA avancés (SDXL, ControlNet, LoRA, Animation).</p>
+                <div>
+                    <span class="status-dot dot-teal"></span>
+                    <span class="card-badge">Workflows visuels</span>
                 </div>
             </a>
         </div>

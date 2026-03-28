@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qwen2.5-7B - Assistant IA</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .info {
+            background: #e3f2fd;
+            color: #0b5e8a;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        .message.user {
+            justify-content: flex-end;
+        }
+        .message.assistant {
+            justify-content: flex-start;
+        }
+        .message-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+        .user .message-content {
+            background: #4CAF50;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .assistant .message-content {
+            background: #e9ecef;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        textarea {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+            display: none;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.info { background: #e3f2fd; color: #0b5e8a; }
+        .params {
+            margin-top: 15px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 13px;
+            color: #666;
+        }
+        .params input {
+            width: 80px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .note {
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 20px; }
+            .message-content { max-width: 85%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Qwen2.5-7B Assistant</h1>
+        <div class="subtitle">Assistant IA conversationnel</div>
+
+        <div class="info">💡 Modèle Qwen2.5-7B-Instruct - Support multilingue (français, anglais, etc.)</div>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="message assistant">
+                <div class="message-content">👋 Bonjour ! Je suis Qwen2.5-7B, un assistant IA. Comment puis-je vous aider ?</div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <textarea id="prompt" rows="2" placeholder="Écrivez votre message..."></textarea>
+            <button id="sendBtn" onclick="sendMessage()">📤 Envoyer</button>
+        </div>
+
+        <div class="params">
+            <span>⚙️ Paramètres :</span>
+            <span>Température: <input type="number" id="temperature" value="0.7" step="0.1" min="0" max="2"></span>
+            <span>Max tokens: <input type="number" id="maxTokens" value="512" step="64" min="64" max="2048"></span>
+        </div>
+
+        <div id="status" class="status"></div>
+        <div class="note">
+            ⚡ Premier appel : 2-3 min (chargement du modèle)<br>
+            🚀 Appels suivants : rapides (1-5 secondes)<br>
+            📝 Le modèle supporte le français et 29 langues
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://ziedbouzekri06--llm-qwen-qwenllm-generate.modal.run";
+        let messages = [
+            {"role": "system", "content": "You are Qwen, a helpful assistant. You speak French and English."}
+        ];
+
+        async function sendMessage() {
+            const prompt = document.getElementById('prompt').value;
+            const sendBtn = document.getElementById('sendBtn');
+            const statusDiv = document.getElementById('status');
+            const temperature = parseFloat(document.getElementById('temperature').value);
+            const maxTokens = parseInt(document.getElementById('maxTokens').value);
+
+            if (!prompt) {
+                showStatus('Veuillez entrer un message', 'error');
+                return;
+            }
+
+            // Ajouter le message de l'utilisateur dans l'interface
+            addMessage(prompt, 'user');
+            document.getElementById('prompt').value = '';
+            sendBtn.disabled = true;
+            showStatus('🤔 Réflexion en cours...', 'info');
+
+            // Ajouter un message temporaire pour l'assistant
+            const tempId = addTempMessage();
+
+            try {
+                messages.push({"role": "user", "content": prompt});
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: messages,
+                        temperature: temperature,
+                        max_tokens: maxTokens,
+                        stream: false
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                const reply = data.choices[0].message.content;
+                
+                // Remplacer le message temporaire
+                replaceTempMessage(tempId, reply);
+                messages.push({"role": "assistant", "content": reply});
+                
+                showStatus('✅ Réponse reçue', 'success');
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                removeTempMessage(tempId);
+                addMessage(`❌ Erreur: ${error.message}`, 'assistant');
+                showStatus(`❌ Erreur: ${error.message}`, 'error');
+            } finally {
+                sendBtn.disabled = false;
+                setTimeout(() => {
+                    if (document.getElementById('status').className === 'status info' ||
+                        document.getElementById('status').className === 'status success') {
+                        document.getElementById('status').style.display = 'none';
+                    }
+                }, 2000);
+            }
+        }
+
+        function addMessage(content, role) {
+            const container = document.getElementById('chatContainer');
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            div.innerHTML = `<div class="message-content">${escapeHtml(content)}</div>`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return div;
+        }
+
+        function addTempMessage() {
+            const container = document.getElementById('chatContainer');
+            const div = document.createElement('div');
+            div.className = 'message assistant';
+            div.id = 'temp-message';
+            div.innerHTML = `<div class="message-content">⏳ <em>En train d'écrire...</em></div>`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return div.id;
+        }
+
+        function replaceTempMessage(tempId, content) {
+            const tempDiv = document.getElementById(tempId);
+            if (tempDiv) {
+                tempDiv.innerHTML = `<div class="message-content">${escapeHtml(content)}</div>`;
+                tempDiv.id = '';
+            }
+        }
+
+        function removeTempMessage(tempId) {
+            const tempDiv = document.getElementById(tempId);
+            if (tempDiv) tempDiv.remove();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/\n/g, '<br>');
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+            if (type !== 'info') {
+                setTimeout(() => statusDiv.style.display = 'none', 4000);
+            }
+        }
+
+        // Envoyer avec Ctrl+Enter
+        document.getElementById('prompt').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
