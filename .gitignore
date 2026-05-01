@@ -4,6 +4,7 @@ hf_token.txt
 .env
 .env.local
 .env.*.local
+openclaw_backup.json
 
 # Fichiers générés localement
 generations/
@@ -23,6 +24,7 @@ __pycache__/
 temp_*
 test_*
 output_*
+
 
 # Fichiers d'environnement
 .venv/

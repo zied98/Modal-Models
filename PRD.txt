@@ -1,0 +1,215 @@
+Voici un PRD (Product Requirements Document) structuré pour les futures évolutions de ton projet. Je le conçois comme un document que tu pourras garder, affiner et utiliser pour guider le développement.
+
+---
+
+# 🚀 PRD - AI Studio v2.0
+
+## 📋 Objectifs
+
+1. **Scalabilité** : Traitement par batch pour générer plusieurs contenus à la fois
+2. **Monitoring** : Suivi des requêtes, temps et coûts pour usage personnel ou commercial
+3. **Productivité** : Système de gestion de prompts réutilisables (librairie)
+
+---
+
+## 1. Traitement par batch
+
+### Problème actuel
+- Un appel = une génération
+- Impossible de générer 10 images à la fois
+
+### Solution proposée
+
+| Type | Description |
+|------|-------------|
+| **Batch API** | Endpoint `/batch/generate` acceptant une liste de prompts |
+| **File upload** | Upload d'un fichier CSV/JSON avec tous les prompts |
+| **Web UI** | Zone de texte multi-lignes : un prompt par ligne |
+
+### Exemple de payload batch
+
+```json
+{
+  "items": [
+    {"prompt": "a cat", "height": 512},
+    {"prompt": "a dog", "height": 512},
+    {"prompt": "a bird", "height": 512}
+  ],
+  "parallel": 3
+}
+```
+
+### Architecture technique
+
+- **Batch Processor** : Fonction Modal qui traite les items en parallèle
+- **File d'attente** : Modal Queue pour gérer les lots (optionnel)
+- **Stockage** : Volume Modal pour les résultats batch
+
+---
+
+## 2. Suivi des requêtes et coûts
+
+### Besoins
+- Compter le nombre de requêtes par modèle
+- Mesurer le temps d'exécution
+- Estimer le coût (Modal, GPU)
+- Exporter les stats pour facturation
+
+### Métriques à collecter
+
+| Métrique | Source |
+|----------|--------|
+| Nombre de requêtes | Compteur local + Modal logs |
+| Temps d'exécution | Logs Modal |
+| Coût GPU | Formule basée sur temps × tarif GPU |
+| Coût stockage | Volume Modal |
+
+### Solution technique
+
+| Composant | Rôle |
+|-----------|------|
+| **LocalStorage** | Compteur simple côté frontend |
+| **SQLite** | Base locale pour l'historique |
+| **Modal Logs** | Source vérité pour le temps d'exécution |
+| **Spreadsheet export** | Export CSV pour facturation |
+
+### Interface utilisateur
+
+- **Dashboard stats** : Graphiques simples (Chart.js)
+- **Compteurs** : TTS: 42, Text2Img: 128, etc.
+- **Export** : Bouton "Exporter CSV"
+
+---
+
+## 3. Librairie de prompts
+
+### Besoins
+- Stocker des prompts réutilisables par modèle
+- Organiser par catégories (style, sujet, format)
+- Versionner les prompts (améliorations)
+
+### Types de prompts
+
+| Catégorie | Exemple |
+|-----------|---------|
+| **Styles** | "cinematic lighting, 4k, photorealistic" |
+| **Sujets** | "a futuristic city, neon lights" |
+| **Formats** | "portrait", "landscape", "square" |
+| **Modèles spécifiques** | Prompts optimisés pour Z-Image, FLUX, Wan2.2 |
+
+### Solutions techniques
+
+| Option | Avantages | Inconvénients |
+|--------|-----------|---------------|
+| **Dossier de fichiers Markdown** | Simple, versionnable, lisible | Pas de recherche avancée |
+| **JSON central** | Facile à parser | Modifications manuelles |
+| **SQLite** | Recherche, catégorisation | Plus complexe |
+| **Base de données distante** | Multi-utilisateurs | Surcoût |
+
+### Structure recommandée (dossier markdown)
+
+```
+prompts/
+├── text_to_image/
+│   ├── styles/
+│   │   ├── cinematic.md
+│   │   ├── anime.md
+│   │   └── realistic.md
+│   └── subjects/
+│       ├── animals.md
+│       └── landscapes.md
+├── image_to_image/
+│   ├── transformations.md
+│   └── styles.md
+├── video/
+│   └── motions.md
+└── README.md
+```
+
+Exemple de fichier `cinematic.md` :
+
+```markdown
+# Cinematic Style
+
+## Description
+Produces cinematic, high-quality images with dramatic lighting.
+
+## Tags
+#cinematic #dramatic #4k #movie
+
+## Prompts
+
+### Default
+cinematic lighting, dramatic atmosphere, 4k, highly detailed, movie poster style
+
+### Sunset
+dramatic sunset, golden hour, cinematic lighting, volumetric fog
+
+### Night
+cinematic night scene, neon lights, dramatic shadows, 4k
+```
+
+---
+
+## 4. Intégration dans le dashboard
+
+### Nouveau dashboard v2
+
+| Section | Contenu |
+|---------|---------|
+| **Stats** | Graphiques, compteurs, export |
+| **Batch** | Zone multi-prompts, options de parallélisation |
+| **Prompt Library** | Recherche, insertion, édition |
+| **Historique** | Liste des générations précédentes |
+
+---
+
+## 📊 Architecture technique globale
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Frontend (Netlify)                      │
+├─────────────────────────────────────────────────────────────┤
+│  Dashboard v2  │  Batch UI  │  Stats UI  │  Prompt Library  │
+└───────────────────────────────┬─────────────────────────────┘
+                                │
+┌───────────────────────────────▼─────────────────────────────┐
+│                    Backend (Modal)                          │
+├─────────────────────────────────────────────────────────────┤
+│  /batch          │  /stats        │  /prompts               │
+│  /queue/status   │  /metrics      │  /prompts/[id]          │
+└─────────────────────────────────────────────────────────────┘
+                                │
+┌───────────────────────────────▼─────────────────────────────┐
+│                    Stockage (Modal Volumes)                 │
+├─────────────────────────────────────────────────────────────┤
+│  outputs/        │  logs/         │  prompts/               │
+│  batch_results/  │  metrics.db    │  templates/             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🗺️ Feuille de route
+
+| Phase | Priorité | Description |
+|-------|----------|-------------|
+| **1** | Haute | Compteurs locaux + affichage dans dashboard |
+| **2** | Haute | Librairie de prompts (dossier markdown) |
+| **3** | Moyenne | Batch processing (2-3 items en parallèle) |
+| **4** | Moyenne | Export CSV + calcul de coûts estimés |
+| **5** | Basse | Base de données SQLite pour historique |
+| **6** | Basse | Interface de gestion de prompts |
+
+---
+
+## ✅ Validation
+
+Si tu valides cette feuille de route, je pourrai te fournir :
+
+1. **Le code complet** pour la phase 1 (compteurs)
+2. **La structure** pour la librairie de prompts
+3. **Les endpoints batch** pour chaque modèle
+4. **Le nouveau dashboard** unifié
+
+**Souhaites-tu que je commence par la phase 1 (compteurs) ou la phase 2 (librairie de prompts) ?**

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Studio - Suite de modèles</title>
+    <title>AI Studio - Command Center</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -22,6 +22,15 @@
             color: #333;
             margin-top: 0;
             font-size: 28px;
+        }
+        h2.section-title {
+            font-size: 1.2rem;
+            color: #4CAF50;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 40px 0 20px 0;
+            border-left: 4px solid #4CAF50;
+            padding-left: 15px;
         }
         .subtitle {
             color: #666;
@@ -87,6 +96,10 @@
         .dot-orange { background: #ff9800; box-shadow: 0 0 5px #ff9800; }
         .dot-red { background: #f44336; box-shadow: 0 0 5px #f44336; }
         .dot-teal { background: #009688; box-shadow: 0 0 5px #009688; }
+        
+        /* Spécifique pour les nouveaux services Railway */
+        .dot-railway { background: #0b0d11; box-shadow: 0 0 5px #0b0d11; }
+
         .footer {
             margin-top: 40px;
             padding-top: 20px;
@@ -112,17 +125,45 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎙️ AI Studio</h1>
+        <h1>🎙️ Command Center - AI Studio</h1>
         <div class="subtitle">
-            Suite de modèles d'intelligence artificielle pour la génération vocale, d'images, de vidéos et de texte
+            Gestion centralisée des agents, bases de connaissances et modèles de génération.
         </div>
 
+        <!-- SECTION PRODUCTION & AGENTS (RAILWAY) -->
+        <h2 class="section-title">Production & Agents (Railway)</h2>
+        <div class="grid">
+            <!-- Carte OpenClaw -->
+            <a href="https://clawdbot-railway-template-production-c217.up.railway.app/?token=ec029d4712c75cb0ea3e653b7466b8fd866444b4e79319d59704b10bbc5bcea6" class="card" target="_blank">
+                <div class="card-icon">🦞</div>
+                <h2>OpenClaw Agent</h2>
+                <p>Agent de code et d'automatisation. Connecté à Llama 3.1 Modal (64k context).</p>
+                <div>
+                    <span class="status-dot dot-green"></span>
+                    <span class="card-badge">Main Agent</span>
+                </div>
+            </a>
+
+            <!-- Carte AnythingLLM -->
+            <a href="https://anythingllm-production-2728.up.railway.app/" class="card" target="_blank">
+                <div class="card-icon">📚</div>
+                <h2>AnythingLLM</h2>
+                <p>Base de connaissances intelligente. RAG, gestion de documents et wiki privé.</p>
+                <div>
+                    <span class="status-dot dot-blue"></span>
+                    <span class="card-badge">Knowledge Base</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- SECTION GÉNÉRATION (MODAL) -->
+        <h2 class="section-title">Modèles de Génération (Modal)</h2>
         <div class="grid">
             <!-- Carte TTS -->
             <a href="tts/tts_ui.html" class="card">
                 <div class="card-icon">🎙️</div>
                 <h2>Text-to-Speech</h2>
-                <p>Générez de la parole à partir de texte. Plusieurs voix disponibles en anglais.</p>
+                <p>Générez de la parole à partir de texte. Plusieurs voix disponibles.</p>
                 <div>
                     <span class="status-dot dot-green"></span>
                     <span class="card-badge">20+ voix</span>
@@ -144,10 +185,10 @@
             <a href="image_to_image/image_ui.html" class="card">
                 <div class="card-icon">🎨</div>
                 <h2>Image-to-Image</h2>
-                <p>Transformez vos images existantes avec FLUX.2-klein. Édition créative.</p>
+                <p>Transformez vos images existantes avec FLUX.2-klein.</p>
                 <div>
                     <span class="status-dot dot-purple"></span>
-                    <span class="card-badge">Style transfert</span>
+                    <span class="card-badge">Creative Engine</span>
                 </div>
             </a>
 
@@ -155,21 +196,10 @@
             <a href="video_generation/video_ui.html" class="card">
                 <div class="card-icon">🎬</div>
                 <h2>Text-to-Video</h2>
-                <p>Générez des vidéos à partir de texte avec Wan2.2. Qualité cinématographique.</p>
+                <p>Générez des vidéos cinématographiques à partir de texte avec Wan2.2.</p>
                 <div>
                     <span class="status-dot dot-orange"></span>
-                    <span class="card-badge">720P</span>
-                </div>
-            </a>
-
-            <!-- Carte LLM - Qwen2.5-7B -->
-            <a href="llm/llm_ui.html" class="card">
-                <div class="card-icon">🤖</div>
-                <h2>LLM Assistant</h2>
-                <p>Assistant IA conversationnel avec Qwen2.5-7B. Multilingue, 128K tokens de contexte.</p>
-                <div>
-                    <span class="status-dot dot-red"></span>
-                    <span class="card-badge">7B paramètres</span>
+                    <span class="card-badge">720P / Wan2.2</span>
                 </div>
             </a>
 
@@ -177,16 +207,16 @@
             <a href="https://ziedbouzekri06--comfyui-server-comfyuiserver-ui.modal.run" class="card" target="_blank">
                 <div class="card-icon">🖼️</div>
                 <h2>ComfyUI Studio</h2>
-                <p>Interface graphique par nœuds pour créer des workflows IA avancés (SDXL, ControlNet, LoRA, Animation).</p>
+                <p>Interface graphique par nœuds pour workflows IA avancés (SDXL, LoRA, Animation).</p>
                 <div>
                     <span class="status-dot dot-teal"></span>
-                    <span class="card-badge">Workflows visuels</span>
+                    <span class="card-badge">Node-based</span>
                 </div>
             </a>
         </div>
 
         <div class="footer">
-            <p>⚡ Modèles déployés sur Modal • 💾 Fichiers stockés sur les volumes Modal</p>
+            <p>⚡ Infrastructure Hybride : Modal & Railway • 💾 Données Persistantes sur Volumes</p>
             <p>🔧 <a href="https://github.com/zied98/Modal-Models" target="_blank">GitHub</a> • 📖 <a href="README.md">Documentation</a></p>
         </div>
     </div>
