@@ -3,163 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Command Center - Zied Studio</title>
+    <title>AI Studio - Command Center</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 1300px; margin: 20px auto; padding: 20px; background: #0f172a; color: #e2e8f0; }
-        .container { background: #1e293b; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid #334155; }
-        h1 { color: #f8fafc; margin: 0 0 10px 0; font-size: 32px; letter-spacing: -1px; }
-        .subtitle { color: #94a3b8; margin-bottom: 40px; border-bottom: 1px solid #334155; padding-bottom: 20px; font-size: 1.1rem; }
-        
-        h2.section-title { font-size: 1rem; color: #38bdf8; text-transform: uppercase; letter-spacing: 2px; margin: 40px 0 20px 0; display: flex; align-items: center; }
-        h2.section-title::after { content: ""; flex: 1; height: 1px; background: #334155; margin-left: 20px; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+            font-size: 28px;
+        }
+        h2.section-title {
+            font-size: 1.1rem;
+            color: #4CAF50;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 40px 0 15px 0;
+            border-left: 4px solid #4CAF50;
+            padding-left: 15px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 10px;
+        }
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: #4CAF50;
+        }
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .card p {
+            color: #666;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            height: 45px;
+            overflow: hidden;
+        }
+        .card-badge {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #666;
+        }
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .dot-green { background: #4CAF50; box-shadow: 0 0 5px #4CAF50; }
+        .dot-blue { background: #2196F3; box-shadow: 0 0 5px #2196F3; }
+        .dot-purple { background: #9c27b0; box-shadow: 0 0 5px #9c27b0; }
+        .dot-orange { background: #ff9800; box-shadow: 0 0 5px #ff9800; }
+        .dot-red { background: #f44336; box-shadow: 0 0 5px #f44336; }
+        .dot-teal { background: #009688; box-shadow: 0 0 5px #009688; }
+        .dot-gray { background: #9e9e9e; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        
-        .card { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 20px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; text-decoration: none; color: inherit; position: relative; overflow: hidden; }
-        .card:hover { transform: translateY(-5px); border-color: #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); background: #1e293b; }
-        
-        .card-icon { font-size: 32px; margin-bottom: 12px; }
-        .card h3 { font-size: 1.2rem; margin: 0 0 8px 0; color: #f1f5f9; }
-        .card p { color: #94a3b8; font-size: 0.85rem; line-height: 1.4; margin-bottom: 15px; height: 40px; overflow: hidden; }
-        
-        .card-footer { display: flex; align-items: center; justify-content: space-between; }
-        .card-badge { background: #1e293b; padding: 3px 10px; border-radius: 6px; font-size: 0.7rem; color: #38bdf8; border: 1px solid #334155; }
-        
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; display: inline-block; }
-        .dot-online { background: #10b981; box-shadow: 0 0 8px #10b981; }
-        .dot-idle { background: #f59e0b; }
-        .dot-offline { background: #64748b; }
-
-        .footer { margin-top: 50px; text-align: center; color: #64748b; font-size: 0.8rem; }
-        .footer a { color: #38bdf8; text-decoration: none; }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #999;
+            font-size: 0.85rem;
+        }
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎮 Command Center</h1>
-        <div class="subtitle">Infrastructure IA & Automatisation • Système Hybride Railway & Modal</div>
+        <h1>🎙️ AI Studio - Command Center</h1>
+        <div class="subtitle">Gestion centralisée de votre infrastructure IA, marketing et gestion de données.</div>
 
-        <!-- 1. AGENTS & INTELLIGENCE -->
-        <h2 class="section-title">Agents & Intelligence</h2>
+        <!-- SECTION 1: AGENTS & INTERFACES -->
+        <h2 class="section-title">Agents & Interfaces (Railway)</h2>
         <div class="grid">
+            <!-- OpenClaw -->
             <a href="https://clawdbot-railway-template-production-c217.up.railway.app/?token=ec029d4712c75cb0ea3e653b7466b8fd866444b4e79319d59704b10bbc5bcea6" class="card" target="_blank">
                 <div class="card-icon">🦞</div>
-                <h3>OpenClaw</h3>
-                <p>Agent principal pour le code et l'automatisation. Llama 3.1 64k.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-online"></span><span style="font-size: 0.7rem">DEPLOYED</span></span>
-                    <span class="card-badge">Main Agent</span>
-                </div>
+                <h2>OpenClaw Agent</h2>
+                <p>Agent de code et d'automatisation principal. Support 64k tokens.</p>
+                <div><span class="status-dot dot-green"></span><span class="card-badge">Actif</span></div>
             </a>
-            <a href="#" class="card">
-                <div class="card-icon">🌐</div>
-                <h3>Open WebUI</h3>
-                <p>Interface de chat avancée pour modèles Modal et OpenRouter.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-offline"></span><span style="font-size: 0.7rem">STANDBY</span></span>
-                    <span class="card-badge">UI Interface</span>
-                </div>
-            </a>
-            <a href="#" class="card">
-                <div class="card-icon">🛡️</div>
-                <h3>Hermes Agent</h3>
-                <p>Agent spécialisé dans le raisonnement complexe et logique.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-offline"></span><span style="font-size: 0.7rem">STANDBY</span></span>
-                    <span class="card-badge">Logic</span>
-                </div>
-            </a>
-        </div>
 
-        <!-- 2. GESTION DU SAVOIR -->
-        <h2 class="section-title">Gestion du Savoir</h2>
-        <div class="grid">
+            <!-- AnythingLLM -->
             <a href="https://anythingllm-production-2728.up.railway.app/" class="card" target="_blank">
                 <div class="card-icon">📚</div>
-                <h3>AnythingLLM</h3>
-                <p>Base de connaissances RAG. Gestion de documents privés.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-online"></span><span style="font-size: 0.7rem">DEPLOYED</span></span>
-                    <span class="card-badge">Vector DB</span>
-                </div>
+                <h2>AnythingLLM</h2>
+                <p>Gestionnaire de documents et RAG. Votre base de connaissances privée.</p>
+                <div><span class="status-dot dot-blue"></span><span class="card-badge">Actif</span></div>
             </a>
+
+            <!-- Open WebUI -->
+            <a href="#" class="card">
+                <div class="card-icon">🌐</div>
+                <h2>Open WebUI</h2>
+                <p>Interface de discussion avancée (ex-Ollama WebUI) pour vos modèles.</p>
+                <div><span class="status-dot dot-gray"></span><span class="card-badge">À déployer</span></div>
+            </a>
+
+            <!-- Hermes Agent -->
+            <a href="#" class="card">
+                <div class="card-icon">🛡️</div>
+                <h2>Hermes Agent</h2>
+                <p>Agent spécialisé dans le raisonnement complexe et le suivi d'instructions.</p>
+                <div><span class="status-dot dot-gray"></span><span class="card-badge">À déployer</span></div>
+            </a>
+        </div>
+
+        <!-- SECTION 2: MARKETING & AUTOMATION -->
+        <h2 class="section-title">Marketing & Automation (Railway)</h2>
+        <div class="grid">
+            <!-- Dify -->
             <a href="#" class="card">
                 <div class="card-icon">⚙️</div>
-                <h3>Dify.ai</h3>
-                <p>Orchestration d'agents et création de workflows IA.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-offline"></span><span style="font-size: 0.7rem">STANDBY</span></span>
-                    <span class="card-badge">Orchestrator</span>
-                </div>
+                <h2>Dify.ai</h2>
+                <p>Orchestration de workflows IA et création d'applications d'entreprise.</p>
+                <div><span class="status-dot dot-gray"></span><span class="card-badge">À déployer</span></div>
             </a>
-            <a href="#" class="card">
-                <div class="card-icon">💎</div>
-                <h3>Strapi</h3>
-                <p>CMS Headless pour gérer les contenus de tes applications.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-offline"></span><span style="font-size: 0.7rem">STANDBY</span></span>
-                    <span class="card-badge">Content API</span>
-                </div>
-            </a>
-        </div>
 
-        <!-- 3. MARKETING & OUTREACH -->
-        <h2 class="section-title">Marketing & Outreach</h2>
-        <div class="grid">
-            <a href="#" class="card">
-                <div class="card-icon">📮</div>
-                <h3>Postiz</h3>
-                <p>Planification et automatisation des réseaux sociaux via IA.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-offline"></span><span style="font-size: 0.7rem">STANDBY</span></span>
-                    <span class="card-badge">Social Media</span>
-                </div>
-            </a>
+            <!-- Typebot -->
             <a href="#" class="card">
                 <div class="card-icon">💬</div>
-                <h3>Typebot</h3>
-                <p>Builder de formulaires et chatbots conversationnels visuels.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-offline"></span><span style="font-size: 0.7rem">STANDBY</span></span>
-                    <span class="card-badge">Conversational</span>
-                </div>
+                <h2>Typebot</h2>
+                <p>Builder de chatbots visuels pour capturer des leads et automatiser le SAV.</p>
+                <div><span class="status-dot dot-gray"></span><span class="card-badge">À déployer</span></div>
             </a>
+
+            <!-- Postiz -->
+            <a href="#" class="card">
+                <div class="card-icon">📮</div>
+                <h2>Postiz</h2>
+                <p>Planification et automatisation de vos réseaux sociaux par IA.</p>
+                <div><span class="status-dot dot-gray"></span><span class="card-badge">À déployer</span></div>
+            </a>
+
+            <!-- Resend -->
             <a href="#" class="card">
                 <div class="card-icon">📧</div>
-                <h3>Resend</h3>
-                <p>Gestion et envoi d'emails transactionnels pour tes agents.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-offline"></span><span style="font-size: 0.7rem">STANDBY</span></span>
-                    <span class="card-badge">Email Engine</span>
-                </div>
+                <h2>Resend</h2>
+                <p>Infrastructure d'envoi d'emails transactionnels pour vos projets.</p>
+                <div><span class="status-dot dot-gray"></span><span class="card-badge">À déployer</span></div>
             </a>
         </div>
 
-        <!-- 4. DATA & PERFORMANCE -->
-        <h2 class="section-title">Data & Performance</h2>
+        <!-- SECTION 3: DATA & CONTENT -->
+        <h2 class="section-title">Contenu & Analytics (Railway)</h2>
         <div class="grid">
+            <!-- Strapi -->
+            <a href="#" class="card">
+                <div class="card-icon">💎</div>
+                <h2>Strapi CMS</h2>
+                <p>CMS Headless pour gérer et distribuer vos contenus via API.</p>
+                <div><span class="status-dot dot-gray"></span><span class="card-badge">À déployer</span></div>
+            </a>
+
+            <!-- Umami -->
             <a href="#" class="card">
                 <div class="card-icon">📈</div>
-                <h3>Umami</h3>
-                <p>Analytics web simples, rapides et respectueux de la vie privée.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-offline"></span><span style="font-size: 0.7rem">STANDBY</span></span>
-                    <span class="card-badge">Analytics</span>
-                </div>
+                <h2>Umami</h2>
+                <p>Analytics web respectueux de la vie privée et légers.</p>
+                <div><span class="status-dot dot-gray"></span><span class="card-badge">À déployer</span></div>
             </a>
+
+            <!-- PostHog -->
             <a href="#" class="card">
                 <div class="card-icon">🦔</div>
-                <h3>PostHog</h3>
-                <p>Analyse comportementale, heatmaps et suivi des features.</p>
-                <div class="card-footer">
-                    <span><span class="status-dot dot-offline"></span><span style="font-size: 0.7rem">STANDBY</span></span>
-                    <span class="card-badge">Product OS</span>
-                </div>
+                <h2>PostHog</h2>
+                <p>Analyse de produit complète : Heatmaps, session replay et tunnels.</p>
+                <div><span class="status-dot dot-gray"></span><span class="card-badge">À déployer</span></div>
+            </a>
+
+            <!-- Paperclip -->
+            <a href="#" class="card">
+                <div class="card-icon">📎</div>
+                <h2>Paperclip</h2>
+                <p>Gestionnaire de documents et partage de fichiers rapide.</p>
+                <div><span class="status-dot dot-gray"></span><span class="card-badge">À déployer</span></div>
+            </a>
+        </div>
+
+        <!-- SECTION 4: GÉNÉRATION MODAL -->
+        <h2 class="section-title">Modèles de Génération (Modal)</h2>
+        <div class="grid">
+            <!-- TTS -->
+            <a href="tts/tts_ui.html" class="card">
+                <div class="card-icon">🎙️</div>
+                <h2>Text-to-Speech</h2>
+                <p>Génération de voix naturelle. 20+ modèles disponibles.</p>
+                <div><span class="status-dot dot-purple"></span><span class="card-badge">Production</span></div>
+            </a>
+
+            <!-- Text-to-Image -->
+            <a href="text_to_image/text_to_image_ui.html" class="card">
+                <div class="card-icon">✨</div>
+                <h2>Image Turbo</h2>
+                <p>Génération d'images ultra-rapide via SDXL / Flux.</p>
+                <div><span class="status-dot dot-teal"></span><span class="card-badge">Turbo</span></div>
+            </a>
+
+            <!-- Wan 2.2 Video -->
+            <a href="video_generation/video_ui.html" class="card">
+                <div class="card-icon">🎬</div>
+                <h2>Video Gen</h2>
+                <p>Génération de vidéos cinématographiques avec Wan2.2.</p>
+                <div><span class="status-dot dot-orange"></span><span class="card-badge">HD</span></div>
+            </a>
+
+            <!-- ComfyUI -->
+            <a href="https://ziedbouzekri06--comfyui-server-comfyuiserver-ui.modal.run" class="card" target="_blank">
+                <div class="card-icon">🖼️</div>
+                <h2>ComfyUI Studio</h2>
+                <p>Interface node-based pour workflows IA complexes.</p>
+                <div><span class="status-dot dot-red"></span><span class="card-badge">Pro Flow</span></div>
             </a>
         </div>
 
         <div class="footer">
-            ⚡ Déployé avec expertise sur <a href="https://railway.app" target="_blank">Railway</a> & <a href="https://modal.com" target="_blank">Modal</a>
+            <p>⚡ Infrastructure Hybride : Railway & Modal • 💾 Stockage Persistant sur Volumes</p>
+            <p>🔧 <a href="https://github.com/zied98" target="_blank">GitHub</a> • 📖 <a href="README.md">Docs</a></p>
         </div>
     </div>
 </body>
